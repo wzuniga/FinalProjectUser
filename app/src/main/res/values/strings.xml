@@ -13,4 +13,18 @@
     <string name="error_incorrect_password">Esta contraseña es incorrecta</string>
     <string name="error_field_required">Campo requerido</string>
     <string name="permission_rationale">"Permiso necesario"</string>
+
+    <!-- Camera -->
+    <string name="infoBotonFoto">"Presiona esteboton para tomar una foto"</string>
+    <string name="ButtonPhoto">Toma una Foto</string>
+    <string name="ButtonSendServer">Enviar</string>
+    <string name="fail_prompt">Robo</string>
+    <string-array name="fail_array">
+        <item>Basura</item>
+        <item>Accidente</item>
+        <item>Robo</item>
+        <item>Otros</item>
+    </string-array>
+
+
 </resources>
