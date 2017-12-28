@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MuniClean</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Contraseña (optional)</string>
+    <string name="action_sign_in">Ingresa o registrate</string>
+    <string name="action_sign_in_short">Ingresa</string>
+    <string name="error_invalid_email">Este main es invalido</string>
+    <string name="error_invalid_password">Esta contraseña es muy corta</string>
+    <string name="error_incorrect_password">Esta contraseña es incorrecta</string>
+    <string name="error_field_required">Campo requerido</string>
+    <string name="permission_rationale">"Permiso necesario"</string>
+</resources>
