@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">MuniClean</string>
+    <string name="app_name">CityClear</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Contraseña (optional)</string>
-    <string name="action_sign_in">Ingresa o registrate</string>
+    <string name="prompt_email">E-mail</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="prompt_password_confirm">Repite tu contraseña</string>
+    <string name="action_sign_in">Ingresa</string>
+    <string name="action_sign_up">Registrate</string>
     <string name="action_sign_in_short">Ingresa</string>
     <string name="error_invalid_email">Este main es invalido</string>
     <string name="error_invalid_password">Esta contraseña es muy corta</string>
