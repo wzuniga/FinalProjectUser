@@ -20,9 +20,9 @@
     <string name="ButtonSendServer">Enviar</string>
     <string name="fail_prompt">Robo</string>
     <string-array name="fail_array">
-        <item>Basura</item>
-        <item>Accidente</item>
-        <item>Robo</item>
+        <item>Basura en Parque</item>
+        <item>Basura en calle</item>
+        <item>Basura en mercado</item>
         <item>Otros</item>
     </string-array>
 

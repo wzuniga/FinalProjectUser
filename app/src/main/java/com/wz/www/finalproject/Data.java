@@ -16,8 +16,8 @@ public class Data {
     String date;
 
     Data(){
-        latitude = -16.64846546+"";
-        longitude = -17.26381683+"";
+        latitude = -16.406282+"";
+        longitude = -71.524863+"";
         altitude = 0.0+"";
         speed = "0";
         hour = Calendar.HOUR+"";

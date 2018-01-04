@@ -6,12 +6,30 @@ import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class registerActivity extends AppCompatActivity {
 
@@ -55,10 +73,6 @@ public class registerActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-    }
-
-    private void insertUserInDataBase(String email, String pass){
-
     }
 
     /**
@@ -117,9 +131,58 @@ public class registerActivity extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
+            }
+
+            BufferedReader in = null;
+            if (android.os.Build.VERSION.SDK_INT > 9) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            }
+            try
+            {
+                HttpClient client = new DefaultHttpClient();
+                HttpPost request = new HttpPost();
+                request.setURI(new URI("https://cityclear.herokuapp.com/user"));
+
+                List<NameValuePair> postParameters = new ArrayList<NameValuePair>(1);
+                postParameters.add(new BasicNameValuePair("nombre", mEmailView.getText().toString()));
+                postParameters.add(new BasicNameValuePair("email", mEmailView.getText().toString()));
+                postParameters.add(new BasicNameValuePair("contrasenia", mPasswordView_1.getText().toString()));
+                request.setEntity(new UrlEncodedFormEntity(postParameters));
+
+                HttpResponse response = client.execute(request);
+                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+                String NL = System.getProperty("line.separator");
+                while ((line = in.readLine()) != null)
+                {
+                    sb.append(line + NL);
+                }
+                in.close();
+
+                Log.d("New Location", "////"+sb.toString());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } finally
+            {
+                if (in != null)
+                {
+                    try
+                    {
+                        in.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             // TODO: register the new account here.

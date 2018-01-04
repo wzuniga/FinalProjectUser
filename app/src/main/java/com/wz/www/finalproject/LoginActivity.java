@@ -13,11 +13,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +30,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity ACCESS_FINE_LOCATION permission request.
      */
     private static final int REQUEST_GPS = 0;
+    public static boolean passCorrect = false;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -195,8 +211,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
-            Intent cameraActivity = new Intent(getApplicationContext(), CameraActivity.class);
-            startActivity(cameraActivity);
+            Log.d("New Location", "´´´´´´´´´´´´´´´´´´´´´´termino task1");
+            Log.d("New Location", "´´´´´´´´´´´´´´´´´´´´´´termino task "+passCorrect);
+            if (passCorrect) {
+                Log.d("New Location", "´´´´´´´´´´´´´´´´´´´´´´termino task2");
+                //Intent cameraActivity = new Intent(getApplicationContext(), CameraActivity.class);
+                //startActivity(cameraActivity);
+            }
+            Log.d("New Location", "´´´´´´´´´´´´´´´´´´´´´´termino task3");
         }
     }
 
@@ -318,32 +340,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                return false;
+            String [] ans = getUserPass(mEmail);
+            Log.d("New Location", "%%%%%%%%%%%%%"+ans[0]);
+            if (ans[0].equals(mPassword)){
+                passCorrect = true;
+                return true;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
+            passCorrect = false;
+            //for (String credential : DUMMY_CREDENTIALS) {
+            //    String[] pieces = credential.split(":");
+            //    if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+            //        return pieces[1].equals(mPassword);
+            //    }
+            //}
 
             // TODO: register the new account here.
-            return true;
+            return false;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
+            Log.d("New Location", "########"+success);
             if (success) {
                 finish();
+                Intent cameraActivity = new Intent(getApplicationContext(), CameraActivity.class);
+                String [] ans = getUserPass(mEmail);
+                cameraActivity.putExtra("usuario", ans[1]);
+                startActivity(cameraActivity);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -354,6 +380,66 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+        public String[] getUserPass(String email){
+            BufferedReader in = null;
+            StringBuffer sb = null;
+            String pass = "";
+            String _id = "";
+            if (android.os.Build.VERSION.SDK_INT > 9) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            }
+            try
+            {
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI("https://cityclear.herokuapp.com/user/"+email));
+                HttpResponse response = client.execute(request);
+                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                sb = new StringBuffer("");
+                String line = "";
+                String NL = System.getProperty("line.separator");
+                while ((line = in.readLine()) != null)
+                {
+                    sb.append(line + NL);
+                }
+                in.close();
+
+                Log.d("New Location", "////"+sb.toString());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } finally
+            {
+                if (in != null)
+                {
+                    try
+                    {
+                        in.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            try {
+                JSONArray array = new JSONArray(sb.toString());
+                JSONObject jsonObj = array.getJSONObject(0);
+                pass = jsonObj.getString("contrasenia");
+                _id = jsonObj.getString("_id");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String ans[] = {pass, _id};
+            return ans;
         }
     }
 }

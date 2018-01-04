@@ -25,8 +25,8 @@
 
     <ImageView
         android:id="@+id/image_from_camera"
-        android:layout_width="200dp"
-        android:layout_height="300dp"
+        android:layout_width="188dp"
+        android:layout_height="222dp"
         android:layout_marginTop="16dp"
         android:src="@mipmap/ic_launcher_round" />
 
@@ -37,6 +37,14 @@
         android:layout_marginTop="16dp"
         android:entries="@array/fail_array"
         android:prompt="@string/fail_prompt" />
+
+    <EditText
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Comentario"
+        android:inputType="textMultiLine" />
 
     <ImageButton
         android:id="@+id/sendInfoToServer"
